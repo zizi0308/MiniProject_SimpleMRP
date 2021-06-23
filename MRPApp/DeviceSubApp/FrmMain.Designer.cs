@@ -29,6 +29,7 @@ namespace DeviceSubApp
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -39,6 +40,10 @@ namespace DeviceSubApp
             this.BtnConnect = new System.Windows.Forms.Button();
             this.BtnDisconnect = new System.Windows.Forms.Button();
             this.RtbSubscr = new System.Windows.Forms.RichTextBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.LblResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.Timer = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -125,15 +130,32 @@ namespace DeviceSubApp
             this.RtbSubscr.Font = new System.Drawing.Font("나눔고딕", 8.999999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.RtbSubscr.Location = new System.Drawing.Point(12, 126);
             this.RtbSubscr.Name = "RtbSubscr";
-            this.RtbSubscr.Size = new System.Drawing.Size(1161, 523);
+            this.RtbSubscr.Size = new System.Drawing.Size(1161, 510);
             this.RtbSubscr.TabIndex = 8;
             this.RtbSubscr.Text = "";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LblResult});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 639);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
+            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.Text = "0";
+            // 
+            // LblResult
+            // 
+            this.LblResult.Name = "LblResult";
+            this.LblResult.Size = new System.Drawing.Size(14, 17);
+            this.LblResult.Text = "0";
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 661);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RtbSubscr);
             this.Controls.Add(this.BtnDisconnect);
             this.Controls.Add(this.BtnConnect);
@@ -148,6 +170,8 @@ namespace DeviceSubApp
             this.MaximizeBox = false;
             this.Name = "FrmMain";
             this.Text = "IoT Device Subscriber";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -164,6 +188,9 @@ namespace DeviceSubApp
         private System.Windows.Forms.Button BtnConnect;
         private System.Windows.Forms.Button BtnDisconnect;
         private System.Windows.Forms.RichTextBox RtbSubscr;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel LblResult;
+        private System.Windows.Forms.Timer Timer;
     }
 }
 
