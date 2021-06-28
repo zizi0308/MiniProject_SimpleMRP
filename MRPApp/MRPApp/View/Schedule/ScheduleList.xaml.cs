@@ -68,8 +68,11 @@ namespace MRPApp.View.Schedule
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchStartTime.SelectedDateTime != null)
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchEndTime.SelectedDateTime != null)
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
 
@@ -155,14 +158,74 @@ namespace MRPApp.View.Schedule
             return isValid;
         }
 
+        /* 수정 데이터 검증 메서드 */
+        public bool IsValidUpdates()         
+        {
+            var isValid = true;
+            InitErrorMessages();
+
+            if (CboPlantCode.SelectedValue == null)
+            {
+                LblPlantCode.Visibility = Visibility.Visible;
+                LblPlantCode.Text = "공장을 선택하세요";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(DtpSchDate.Text))
+            {
+                LblSchDate.Visibility = Visibility.Visible;
+                LblSchDate.Text = "공정일을 입력하세요";
+                isValid = false;
+            }
+
+            /*if (CboPlantCode.SelectedValue != null && !string.IsNullOrEmpty(DtpSchDate.Text))
+            {
+                var result = Logic.DataAccess.GetSchedules().Where(s => s.PlantCode.Equals(CboPlantCode.SelectedValue.ToString()))
+                    .Where(d => d.SchDate.Equals(DateTime.Parse(DtpSchDate.Text))).Count();
+                if (result > 0)
+                {
+                    LblSchDate.Visibility = Visibility.Visible;
+                    LblSchDate.Text = "해당 공정일 계획이 이미 존재합니다";
+                    isValid = false;
+                }
+            }*/
+
+            if (string.IsNullOrEmpty(TxtSchLoadTime.Text))
+            {
+                LblSchLoadTime.Visibility = Visibility.Visible;
+                LblSchLoadTime.Text = "로드타임을 입력하세요";
+                isValid = false;
+            }
+
+            if (CboSchFacilityID.SelectedValue == null)
+            {
+                LblSchFacilityID.Visibility = Visibility.Visible;
+                LblSchFacilityID.Text = "공정설비를 선택하세요";
+                isValid = false;
+            }
+
+            if (NudSchAmount.Value <= 0)
+            {
+                LblSchAmount.Visibility = Visibility.Visible;
+                LblSchAmount.Text = "계획수량은 0개 이상입니다.";
+                isValid = false;
+            }
+
+            return isValid;
+        }
         private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
+            if (IsValidUpdates() != true) return;
+            // 수정할때는 IsvaliedInput 못씀
             var item = GrdData.SelectedItem as Model.Schedules;
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchStartTime.SelectedDateTime != null)
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchEndTime.SelectedDateTime != null)
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
 
@@ -215,6 +278,8 @@ namespace MRPApp.View.Schedule
 
         private void GrdData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
+            ClearInputs();
+
             try
             {
                 var item = GrdData.SelectedItem as Model.Schedules;
@@ -222,8 +287,10 @@ namespace MRPApp.View.Schedule
                 CboPlantCode.SelectedValue = item.PlantCode;
                 DtpSchDate.Text = item.SchDate.ToString();
                 TxtSchLoadTime.Text = item.SchLoadTime.ToString();
-                TmpSchStartTime.SelectedDateTime = new DateTime(item.SchStartTime.Value.Ticks);
-                TmpSchEndTime.SelectedDateTime = new DateTime(item.SchEndTime.Value.Ticks); ;
+                if (item.SchStartTime != null)
+                    TmpSchStartTime.SelectedDateTime = new DateTime(item.SchStartTime.Value.Ticks);
+                if (item.SchEndTime != null)
+                    TmpSchEndTime.SelectedDateTime = new DateTime(item.SchEndTime.Value.Ticks); ;
                 CboSchFacilityID.SelectedValue = item.SchFacilityID;
                 NudSchAmount.Value = item.SchAmount;
 
