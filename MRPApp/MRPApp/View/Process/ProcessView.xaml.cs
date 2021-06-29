@@ -1,9 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace MRPApp.View.Process
 {
@@ -12,10 +20,11 @@ namespace MRPApp.View.Process
     /// 1. 공정계획에서 오늘의 생산계획 일정을 불러옴
     /// 2. 없으면 에러표시, 시작버튼을 클릭하지 못하게 만듬
     /// 3. 있으면 오늘의 날짜를 표시, 시작버튼 활성화
+    /// 3-1. MQTT Subscription 연결, factory1/machine1/data 확인...
     /// 4. 시작버튼 클릭시 새 공정을 생성, DB에 입력
-    ///     공정코드 : PRC20210618001 (PRC+yyyy+MM+dd+NNN)
+    ///    공정코드 : PRC20210618001 (PRC+yyyy+MM+dd+NNN)
     /// 5. 공정처리 애니메이션 시작
-    /// 6.로드타임 후 애니메이션 중지
+    /// 6. 로드타임 후 애니메이션 중지
     /// 7. 센서링값 리턴될때까지 대기
     /// 8. 센서링 결과값에 따라서 생산품 색상변경
     /// 9. 현재 공정의 DB값 업데이트
@@ -30,7 +39,7 @@ namespace MRPApp.View.Process
 
         public ProcessView()
         {
-            InitializeComponent();
+            InitializeComponent();  // 공정시작 시 MQTT 브로커에 연결
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -58,6 +67,8 @@ namespace MRPApp.View.Process
                     LblSchLoadTime.Content = $"{currShedule.SchLoadTime} 초";
                     LblSchAmount.Content = $"{currShedule.SchAmount} 개";
                     BtnStartProcess.IsEnabled = true;
+
+                    InitConnectMqttBroker();
                 }
             }
             catch (Exception ex)
@@ -67,7 +78,128 @@ namespace MRPApp.View.Process
             }
         }
 
+        MqttClient client;
+        Timer timer = new Timer();
+        Stopwatch sw = new Stopwatch();
+        private void InitConnectMqttBroker()
+        {
+            var brokerAddress = IPAddress.Parse("210.119.12.50"); // MQTT Mosquitto Broker IP
+            client = new MqttClient(brokerAddress);
+            client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+
+            client.Connect("Monitor");
+            client.Subscribe(new string[] { "factory1/machine1/data/" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
+
+            timer = new Timer();
+            timer.Enabled = true;
+            timer.Interval = 1000;
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (sw.Elapsed.Seconds >= 2)    // 2초 대기후 일처리
+            {
+                sw.Stop();
+                sw.Reset();
+                MessageBox.Show(currentData["PRC_MSG"]);
+            }
+        }
+
+        Dictionary<string, string> currentData = new Dictionary<string, string>();
+
+        private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            var message = Encoding.UTF8.GetString(e.Message);
+            var currentData = JsonConvert.DeserializeObject<Dictionary<string, string>>(message);
+
+            sw.Stop();
+            sw.Reset();
+            sw.Start();
+
+            StartSensorAnimation();
+        }
+
+        private void StartSensorAnimation()
+        {
+            DoubleAnimation ba = new DoubleAnimation();
+            ba.From = 1;    // 켜짐
+            ba.To = 0;      // 이미지 보이지 않음
+            ba.Duration = TimeSpan.FromSeconds(2);
+            ba.AutoReverse = true;
+            //ba.RepeatBehavior = RepeatBehavior.Forever;
+
+            sensor.BeginAnimation(Canvas.OpacityProperty, ba);  // 데이터가 왔을때 깜빡거림
+        }
+
         private void BtnStartProcess_Click(object sender, RoutedEventArgs e)
+        {
+            if (InsertProcessData())
+                StartAnimation();   // 애니메이션 실행
+        }
+
+        private bool InsertProcessData()
+        {
+            var item = new Model.Process();
+            item.SchIdx = currShedule.SchIdx;
+            item.PrcCD = GetProcessCodeFromDB();
+            item.PrcDate = DateTime.Now;
+            item.PtcLoadTime = currShedule.SchLoadTime;
+            item.PrcEndTime = currShedule.SchEndTime;
+            item.PrcFacilityID = Commons.FACILITYID;
+            item.PrcResult = true;  // 공정성공으로 일단 픽스
+            item.RegDate = DateTime.Now;
+            item.RegID = "MRP";
+
+            try
+            {
+                var result = Logic.DataAccess.SetProcess(item);
+                if (result == 0)
+                {
+                    Commons.LOGGER.Error("데이터 입력 실패!");
+                    Commons.ShowMessageAsync("오류", "공정시작 오류발생, 관리자 문의");
+                    return false;
+                }
+                else
+                {
+                    Commons.LOGGER.Info("공정데이터 입력");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 : {ex}");
+                Commons.ShowMessageAsync("오류", "공정시작 오류발생, 관리자 문의");
+                return false;
+            }
+        }
+
+        private string GetProcessCodeFromDB()
+        {
+            var prefix = "PRC";
+            var prePrcCode = prefix + DateTime.Now.ToString("yyyyMMdd");    // PRC20210629
+            var resultCode = string.Empty;
+
+            // 이전까지 공정이 없으면 (PRC20210629...) null이 넘어오고
+            // PRC20210629001, 002, 003, 004 --> PRC20210629004의 데이터가 넘어옴
+            var maxPrc = Logic.DataAccess.GetProcesses().Where(p => p.PrcCD.Contains(prePrcCode))
+                                    .OrderByDescending(p => p.PrcCD).FirstOrDefault();
+            if (maxPrc == null) // 최초값을 만들어줌
+            {
+                resultCode = prePrcCode + "001"; // ToString("001") = "001"    // 최초공정일 번호
+            }
+            else
+            {
+                var maxPrcCd = maxPrc.PrcCD;    // PRC20210629004
+                var maxVal = int.Parse(maxPrcCd.Substring(11)) + 1; // 004 --> 4 + 1 --> 5
+
+                resultCode = prePrcCode + maxVal.ToString("000");
+            }
+            return resultCode;
+        }
+
+        private void StartAnimation()
         {
             /* 기어 애니메이션 속성 */
             DoubleAnimation da = new DoubleAnimation();
