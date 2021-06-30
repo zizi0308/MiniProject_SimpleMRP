@@ -21,6 +21,7 @@ using MRPApp.View.Setting;
 using MRPApp.View.Schedule;
 using System.Configuration;
 using MRPApp.View.Process;
+using MRPApp.View.Report;
 
 namespace MRPApp
 {
@@ -137,6 +138,19 @@ namespace MRPApp
             catch (Exception ex)
             {
                 Commons.LOGGER.Error($"예외발생 BtnMonitoring_Click : {ex}");
+                this.ShowMessageAsync("예외", $"예외발생 : {ex}");
+            }
+        }
+
+        private void BtnReport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ActiveControl.Content = new ReportView();
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 BtnReport_Click : {ex}");
                 this.ShowMessageAsync("예외", $"예외발생 : {ex}");
             }
         }

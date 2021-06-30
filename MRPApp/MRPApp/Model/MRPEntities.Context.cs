@@ -13,10 +13,10 @@ namespace MRPApp.Model
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MRPEntities : DbContext
+    public partial class MRPEntities2 : DbContext
     {
-        public MRPEntities()
-            : base("name=MRPEntities")
+        public MRPEntities2()
+            : base("name=MRPEntities2")
         {
         }
     

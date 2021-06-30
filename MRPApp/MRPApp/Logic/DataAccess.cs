@@ -15,7 +15,7 @@ namespace MRPApp.Logic
         {
             List<Model.Settings> list;
 
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
                 list = ctx.Settings.ToList();           // select
             
             return list;
@@ -23,7 +23,7 @@ namespace MRPApp.Logic
 
         public static int SetSettings(Settings item)
         {
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
             {
                 ctx.Settings.AddOrUpdate(item);             // insert or update
                 return ctx.SaveChanges();                   // 커밋
@@ -32,7 +32,7 @@ namespace MRPApp.Logic
 
         public static int DelSettings(Settings item)      // 파라미터를 아이템으로 통일하면 쓰기 좋음
         {
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
             {
                 var obj = ctx.Settings.Find(item.BasicCode);    // 검색한 데이터를 obj로 만들어서 삭제함(검색한 실제 데이터를 삭제)
                 ctx.Settings.Remove(obj);                       // delete
@@ -44,7 +44,7 @@ namespace MRPApp.Logic
         {
             List<Model.Schedules> list;                  // setting과 schedule을 함께 같은 변수(list)로 지칭(일반화)
 
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
                 list = ctx.Schedules.ToList();           // select
 
             return list;
@@ -52,7 +52,7 @@ namespace MRPApp.Logic
 
         internal static int SetSchedule(Schedules item)
         {
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
             {
                 ctx.Schedules.AddOrUpdate(item);            // INSERT | UPDATE
                 return ctx.SaveChanges();                   // COMMIT
@@ -63,7 +63,7 @@ namespace MRPApp.Logic
         {
             List<Model.Process> list;
 
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
                 list = ctx.Process.ToList();    // SELECT
 
             return list;
@@ -71,7 +71,7 @@ namespace MRPApp.Logic
 
         internal static int SetProcess(Process item)
         {
-            using (var ctx = new MRPEntities())
+            using (var ctx = new MRPEntities2())
             {
                 ctx.Process.AddOrUpdate(item);  // INSERT | UPDATE
                 return ctx.SaveChanges();       // COMMIT

@@ -176,12 +176,20 @@
     <Reference Include="NPOI.OpenXmlFormats, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=2.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
@@ -207,32 +215,35 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logic\DataAccess.cs" />
-    <Compile Include="Model\MRPModel.Context.cs">
+    <Compile Include="Model\MRPEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MRPModel.Context.tt</DependentUpon>
+      <DependentUpon>MRPEntities.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\MRPModel.cs">
+    <Compile Include="Model\MRPEntities.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MRPModel.tt</DependentUpon>
+      <DependentUpon>MRPEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\MRPModel.Designer.cs">
+    <Compile Include="Model\MRPEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MRPModel.edmx</DependentUpon>
+      <DependentUpon>MRPEntities.edmx</DependentUpon>
     </Compile>
     <Compile Include="Model\Process.cs">
-      <DependentUpon>MRPModel.tt</DependentUpon>
+      <DependentUpon>MRPEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Schedules.cs">
-      <DependentUpon>MRPModel.tt</DependentUpon>
+      <DependentUpon>MRPEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Settings.cs">
-      <DependentUpon>MRPModel.tt</DependentUpon>
+      <DependentUpon>MRPEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="View\Process\ProcessView.xaml.cs">
       <DependentUpon>ProcessView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Report\ReportView.xaml.cs">
+      <DependentUpon>ReportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Schedule\ScheduleList.xaml.cs">
       <DependentUpon>ScheduleList.xaml</DependentUpon>
@@ -266,6 +277,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\Process\ProcessView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Report\ReportView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -312,12 +327,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="Model\MRPModel.edmx">
+    <EntityDeploy Include="Model\MRPEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MRPModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>MRPEntities.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Model\MRPModel.edmx.diagram">
-      <DependentUpon>MRPModel.edmx</DependentUpon>
+    <None Include="Model\MRPEntities.edmx.diagram">
+      <DependentUpon>MRPEntities.edmx</DependentUpon>
     </None>
     <None Include="NanumGothic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -336,7 +351,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
@@ -498,19 +512,21 @@
     <Resource Include="Resources\factory.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Model\MRPModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MRPModel.Context.cs</LastGenOutput>
-      <DependentUpon>MRPModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Model\MRPModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MRPModel.edmx</DependentUpon>
-      <LastGenOutput>MRPModel.cs</LastGenOutput>
-    </Content>
     <Resource Include="Resources\belt.png" />
     <Resource Include="Resources\sensor.png" />
     <Resource Include="Resources\gear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Model\MRPEntities.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MRPEntities.edmx</DependentUpon>
+      <LastGenOutput>MRPEntities.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\MRPEntities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MRPEntities.edmx</DependentUpon>
+      <LastGenOutput>MRPEntities.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

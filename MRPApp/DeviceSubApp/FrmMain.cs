@@ -105,6 +105,7 @@ namespace DeviceSubApp
             iotData.Clear();    // 데이터 모두 삭제
         }
 
+        // MQTT 브로커(내부적 소켓)
         private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             try
@@ -158,6 +159,7 @@ namespace DeviceSubApp
 
         private void UpdateText(string message)
         {
+            // RtbSubscr 리치텍스트 UI
             if (RtbSubscr.InvokeRequired)
             {
                 UpdateTextCallback callback = new UpdateTextCallback(UpdateText);

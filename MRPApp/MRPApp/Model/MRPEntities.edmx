@@ -13,7 +13,7 @@
           <Property Name="SchIdx" Type="int" Nullable="false" />
           <Property Name="PrcCD" Type="char" MaxLength="14" Nullable="false" />
           <Property Name="PrcDate" Type="date" Nullable="false" />
-          <Property Name="PtcLoadTime" Type="int" />
+          <Property Name="PrcLoadTime" Type="int" />
           <Property Name="PrcStartTime" Type="time" Precision="7" />
           <Property Name="PrcEndTime" Type="time" Precision="7" />
           <Property Name="PrcFacilityID" Type="char" MaxLength="8" />
@@ -134,7 +134,7 @@
           <Property Name="SchIdx" Type="Int32" Nullable="false" />
           <Property Name="PrcCD" Type="String" MaxLength="14" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="PrcDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="PtcLoadTime" Type="Int32" />
+          <Property Name="PrcLoadTime" Type="Int32" />
           <Property Name="PrcStartTime" Type="Time" Precision="7" />
           <Property Name="PrcEndTime" Type="Time" Precision="7" />
           <Property Name="PrcFacilityID" Type="String" MaxLength="8" FixedLength="true" Unicode="false" />
@@ -229,7 +229,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MRPEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MRPEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Process" EntityType="Self.Process" />
           <EntitySet Name="Schedules" EntityType="Self.Schedules" />
           <EntitySet Name="Settings" EntityType="Self.Settings" />
@@ -255,7 +255,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MRPModelStoreContainer" CdmEntityContainer="MRPEntities">
+        <EntityContainerMapping StorageEntityContainer="MRPModelStoreContainer" CdmEntityContainer="MRPEntities2">
           <EntitySetMapping Name="Process">
             <EntityTypeMapping TypeName="MRPModel.Process">
               <MappingFragment StoreEntitySet="Process">
@@ -263,7 +263,7 @@
                 <ScalarProperty Name="SchIdx" ColumnName="SchIdx" />
                 <ScalarProperty Name="PrcCD" ColumnName="PrcCD" />
                 <ScalarProperty Name="PrcDate" ColumnName="PrcDate" />
-                <ScalarProperty Name="PtcLoadTime" ColumnName="PtcLoadTime" />
+                <ScalarProperty Name="PrcLoadTime" ColumnName="PrcLoadTime" />
                 <ScalarProperty Name="PrcStartTime" ColumnName="PrcStartTime" />
                 <ScalarProperty Name="PrcEndTime" ColumnName="PrcEndTime" />
                 <ScalarProperty Name="PrcFacilityID" ColumnName="PrcFacilityID" />
