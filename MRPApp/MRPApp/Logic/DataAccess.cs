@@ -19,7 +19,7 @@ namespace MRPApp.Logic
 
             using (var ctx = new MRPEntities2())
                 list = ctx.Settings.ToList();           // select
-            
+
             return list;
         }
 
@@ -84,6 +84,7 @@ namespace MRPApp.Logic
         {
             var connString = ConfigurationManager.ConnectionStrings["MRPConnString"].ToString();
             var list = new List<Report>();
+            var lastObj = new Model.Report(); // 추가 : 최종 report값 담는 변수
 
             using (var conn = new SqlConnection(connString))
             {
@@ -123,8 +124,33 @@ namespace MRPApp.Logic
                         PrcFailAmount = (int)reader["PrcFailAmount"]
                     };
                     list.Add(tmp);
+                    lastObj = tmp;  // 마지막 값을 할당
+                }
+                // 시작일부터 종료일까지 없는 값 만들어주는 로직
+                var DtStart = DateTime.Parse(startDate);
+                var DtEnd = DateTime.Parse(endDate);
+                var DtCurrent = DtStart;
+
+                while (DtCurrent < DtEnd)
+                {
+                    var count = list.Where(c => c.PrcDate.Equals(DtCurrent)).Count();
+                    if (count == 0)
+                    {
+                        // 새로운 Report(없는 날짜)
+                        var tmp = new Report
+                        {
+                            SchIdx = lastObj.SchIdx,
+                            PrcDate = DtCurrent,
+                            SchAmount = 0,
+                            PrcOkAmount = 0,
+                            PrcFailAmount = 0
+                        };
+                        list.Add(tmp);
+                    }
+                    DtCurrent = DtCurrent.AddDays(1); // 날하루 증가
                 }
             }
+            list.Sort((reportA, reportB) => reportA.PrcDate.CompareTo(reportB.PrcDate)); // 가장오래된 날짜부터 오름차순 정렬
             return list;
         }
     }
