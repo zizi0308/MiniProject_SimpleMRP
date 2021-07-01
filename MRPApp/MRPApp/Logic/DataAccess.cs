@@ -140,6 +140,7 @@ namespace MRPApp.Logic
                         var tmp = new Report
                         {
                             SchIdx = lastObj.SchIdx,
+                            PlantCode = lastObj.PlantCode,
                             PrcDate = DtCurrent,
                             SchAmount = 0,
                             PrcOkAmount = 0,
