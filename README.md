@@ -40,7 +40,7 @@ C#과 WPF, Python을 활용하여 라즈베리파이에서 센싱된 컬러값�
 
 #### 공정 진행 순서</br>
 1. 라즈베리파이에 컬러감지 센서 모듈 연결
-2. 라즈비안Os와 vncServer를 활용해 라즈베리파이 내부의 파이썬 코드실행 
+2. 라즈비안Os와 vncServer를 활용해 라즈베리파이 내부의 파이썬 코드실행
 3. MQTT Explorer에 만들어둔 Connections에 connect
 4. Visual Studio에서 FrmMain과 공정모니터링 실행 (FrmMain을 통해 DB에 센싱값 반영)
 5. 센싱이 성공되어 값이 반영되면 위에 있는 센서이미지가 깜빡임
@@ -90,6 +90,7 @@ C#과 WPF, Python을 활용하여 라즈베리파이에서 센싱된 컬러값�
 
 공정실행 후의 DB화면입니다.
 
+[DB 스키마 바로가기](https://github.com/zizi0308/MiniProject_SimpleMRP/tree/main/MRPApp/Query)
 </br>
 </br>
 
