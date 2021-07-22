@@ -50,7 +50,7 @@ C#과 WPF, Python을 활용하여 라즈베리파이에서 센싱된 컬러값�
 
 ![Success_Image](https://github.com/zizi0308/MiniProject_SimpleMRP/blob/main/images/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4_%EC%84%B1%EA%B3%B5.gif)
 
-공정이 성공했을때 나타나는 애니메이션 입니다. 
+공정이 성공했을때 나타나는 애니메이션입니다. 박스가 초록색으로 변합니다. 
 
 </br>
 </br>
@@ -59,7 +59,7 @@ C#과 WPF, Python을 활용하여 라즈베리파이에서 센싱된 컬러값�
 
 ![Fail_Image](https://github.com/zizi0308/MiniProject_SimpleMRP/blob/main/images/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4_%EC%8B%A4%ED%8C%A8.gif)
 
-공정이 실패했을때 나타나는 애니메이션 입니다.
+공정이 실패했을때 나타나는 애니메이션 입니다. 박스가 빨간색으로 변합니다.
 
 </br>
 </br>
@@ -75,7 +75,7 @@ C#과 WPF, Python을 활용하여 라즈베리파이에서 센싱된 컬러값�
 
 ## 6. 설정
 
-![Setting_Images_1](https://github.com/zizi0308/MiniProject_SimpleMRP/blob/main/images/%EC%84%A4%EC%A0%95%EC%9E%85%EB%A0%A5%EB%B0%8F%EC%82%AD%EC%A0%9C.gif)
+![Setting_Images_1](https://github.com/zizi0308/MiniProject_SimpleMRP/blob/main/images/%EC%84%A4%EC%A0%95%EC%9E%85%EB%A0%A5%EB%B0%8F%EC%82%AD%EC%A0%9C.gif)</br></br>
 ![Setting_Images_2](https://github.com/zizi0308/MiniProject_SimpleMRP/blob/main/images/%EC%84%A4%EC%A0%95_%EC%9E%85%EB%A0%A5%EA%B2%BD%EA%B3%A0.gif)
 
 
